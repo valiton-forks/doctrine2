@@ -46,7 +46,7 @@ use Doctrine\ORM\Query\AST\SelectStatement;
  */
 class LimitSubqueryOutputWalker extends SqlWalker
 {
-    private const ORDER_BY_PATH_EXPRESSION = '/(?<![a-z0-9_])%s\.%s(?![a-z0-9_])/i';
+    const ORDER_BY_PATH_EXPRESSION = '/(?<![a-z0-9_])%s\.%s(?![a-z0-9_])/i';
 
     /**
      * @var \Doctrine\DBAL\Platforms\AbstractPlatform
@@ -395,7 +395,7 @@ class LimitSubqueryOutputWalker extends SqlWalker
         array $identifiers,
         string $innerSql
     ) : string {
-        [$searchPatterns, $replacements] = $this->generateSqlAliasReplacements();
+        list($searchPatterns, $replacements) = $this->generateSqlAliasReplacements();
 
         $orderByItems = [];
 
