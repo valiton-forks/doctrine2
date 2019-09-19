@@ -400,30 +400,31 @@ abstract class AbstractQuery
         if (is_scalar($value)) {
             return $value;
         }
-
+        if ($value instanceof Mapping\ClassMetadata) {
+            return $value->discriminatorValue ?: $value->getClassName();
+        }
         if ($value instanceof Collection) {
             $value = $value->toArray();
         }
-
         if (is_array($value)) {
             foreach ($value as $key => $paramValue) {
                 $paramValue  = $this->processParameterValue($paramValue);
                 $value[$key] = is_array($paramValue) ? reset($paramValue) : $paramValue;
             }
-
             return $value;
         }
-
-        if (is_object($value) && $this->_em->getMetadataFactory()->hasMetadataFor(ClassUtils::getClass($value))) {
-            $value = $this->_em->getUnitOfWork()->getSingleIdentifierValue($value);
-
+        if (! is_object($value)) {
+            return $value;
+        }
+        try {
+            $value = $this->em->getUnitOfWork()->getSingleIdentifierValue($value);
             if ($value === null) {
                 throw ORMInvalidArgumentException::invalidIdentifierBindingEntity();
             }
-        }
-
-        if ($value instanceof Mapping\ClassMetadata) {
-            return $value->name;
+        } catch (MappingException | CommonMappingException $e) {
+            // Silence any mapping exceptions. These can occur if the object in
+            // question is not a mapped entity, in which case we just don't do
+            // any preparation on the value.
         }
 
         return $value;
