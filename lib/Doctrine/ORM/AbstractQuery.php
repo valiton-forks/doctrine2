@@ -418,7 +418,7 @@ abstract class AbstractQuery
             return $value;
         }
         try {
-            $value = $this->em->getUnitOfWork()->getSingleIdentifierValue($value);
+            $value = $this->_em->getUnitOfWork()->getSingleIdentifierValue($value);
             if ($value === null) {
                 throw ORMInvalidArgumentException::invalidIdentifierBindingEntity();
             }
