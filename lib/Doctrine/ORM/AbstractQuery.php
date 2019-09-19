@@ -22,6 +22,7 @@ namespace Doctrine\ORM;
 use Doctrine\Common\Util\ClassUtils;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Persistence\Mapping\MappingException;
 
 use Doctrine\ORM\Query\Parameter;
 use Doctrine\ORM\Cache\QueryCacheKey;
@@ -421,7 +422,7 @@ abstract class AbstractQuery
             if ($value === null) {
                 throw ORMInvalidArgumentException::invalidIdentifierBindingEntity();
             }
-        } catch (MappingException | CommonMappingException $e) {
+        } catch (MappingException $e) {
             // Silence any mapping exceptions. These can occur if the object in
             // question is not a mapped entity, in which case we just don't do
             // any preparation on the value.
